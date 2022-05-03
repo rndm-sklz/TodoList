@@ -20,7 +20,7 @@ code {
 
 .rm {
   background: red;
-  border-radius: 50%;
+  border-radius: 20%;
   color: #fff;
   border: none;
 }
@@ -29,27 +29,39 @@ code {
   text-decoration: line-through;
 }
 
-.lds-dual-ring {
+.lds-facebook {
   display: inline-block;
-  width: 64px;
-  height: 64px;
+  position: relative;
+  width: 80px;
+  height: 80px;
 }
-.lds-dual-ring:after {
-  content: ' ';
-  display: block;
-  width: 46px;
-  height: 46px;
-  margin: 1px;
-  border-radius: 50%;
-  border: 5px solid blue;
-  border-color: blue transparent blue transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
+.lds-facebook div {
+  display: inline-block;
+  position: absolute;
+  left: 8px;
+  width: 16px;
+  background: rgb(160, 160, 160);
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
-@keyframes lds-dual-ring {
+.lds-facebook div:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.24s;
+}
+.lds-facebook div:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.12s;
+}
+.lds-facebook div:nth-child(3) {
+  left: 56px;
+  animation-delay: 0;
+}
+@keyframes lds-facebook {
   0% {
-    transform: rotate(0deg);
+    top: 8px;
+    height: 64px;
   }
-  100% {
-    transform: rotate(360deg);
+  50%, 100% {
+    top: 24px;
+    height: 32px;
   }
 }
