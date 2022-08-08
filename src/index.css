@@ -29,13 +29,26 @@ code {
 
 .todo-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: .5rem;
   align-items: center;
   padding: .5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: .5rem;
 }
+
+.todo-item span {
+  margin-right: auto;
+  display: inline-block;
+  width: 85%;
+}
+
+.todo-edit-input {
+  display: inline-block;
+  width: 95%;
+}
+
 
 .todo-form {
   display: flex;

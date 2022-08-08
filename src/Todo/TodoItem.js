@@ -21,6 +21,7 @@ function TodoItem({ todo: { id, title, completed }, index, onChange, onEditSave 
 		<li className='todo-item'>
 			<span>
 				<input
+				className='todo-edit-input'
 					value={editableTitle}
 					onChange={(event) => setEditableTitle(event.target.value)}
 				/>
