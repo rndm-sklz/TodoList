@@ -1,37 +1,58 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import TodoList from './Todo/TodoList'
 import Context from './context'
-import Loader from './Loader'
+import AddTodo from './Todo/AddTodo'
+import TodoFilters from './Todo/TodoFilters'
 
-const AddTodo = React.lazy(() => import('./Todo/AddTodo'))
-
-// function App() {
-//   const [todos, setTodos] = React.useState([
-//     { id: 1, completed: false, title: 'Прес качат' },
-//     { id: 2, completed: false, title: 'Анжуманя' },
-//     { id: 3, completed: false, title: 'Бегит' },
-//   ])
 
 function App() {
-  const [todos, setTodos] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState('all');
+  const [filteredTodos, setFilteredTodos] = useState([]);
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/todos?_limit=5')
-      .then(response => response.json())
-      .then(todos => {
-        setTimeout(() => {
-          setTodos(todos)
-          setLoading(false)
-        }, 2000)
-      })
+    let localTodo = JSON.parse(localStorage.getItem('todos'));
+
+    if (localTodo) setTodos(localTodo)
+
+    setIsLoaded(true);
   }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
+  }, [todos, isLoaded])
+
+  console.log(localStorage);
+
+  useEffect(() => {
+    if (filter === 'all') {
+      setFilteredTodos(todos);
+    } else if (filter === 'active') {
+      const activeTodos = todos.filter(todo => !todo.completed);
+      setFilteredTodos(activeTodos);
+    } else if (filter === 'completed') {
+      const completedTodos = todos.filter(todo => todo.completed);
+      setFilteredTodos(completedTodos);
+    }
+  }, [todos, filter])
 
   function toggleTodo(id) {
     setTodos(
       todos.map(todo => {
         if (todo.id === id) {
           todo.completed = !todo.completed
+        }
+        return todo
+      })
+    )
+  }
+
+  function onEditSave (id, title) {
+    setTodos(
+      todos.map( todo => {
+        if (todo.id === id) {
+          todo.title = title
         }
         return todo
       })
@@ -54,12 +75,9 @@ function App() {
     <Context.Provider value={{ removeTodo }}>
       <div className="wrapper">
         <h1>Todo List</h1>
-        <React.Suspense fallback={<p>Loading ...</p>}>
-          <AddTodo onCreate={addTodo} />
-        </React.Suspense>
-
-        {loading && <Loader />}
-        {todos.length ? <TodoList todos={todos} onToggle={toggleTodo} /> : loading ? null : <p>No todos :(</p>}
+        <AddTodo onCreate={addTodo} />
+        {todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
+        <TodoFilters setFilter={setFilter} todos={todos}/>
       </div>
     </Context.Provider>
   )

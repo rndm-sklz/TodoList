@@ -11,7 +11,6 @@ function useInputValue(defaultValue = '') {
         },
         clear: () => setValue(''),
         value: () => value
-
     }
 }
 
@@ -28,7 +27,7 @@ function AddTodo({ onCreate }) {
     }
 
     return (
-        <form style={{ marginBottom: '1rem' }} onSubmit={submitHandler}>
+        <form className='todo-form' onSubmit={submitHandler}>
             <input {...input.bind} />
             <button type='submit'>Add Todo</button>
         </form>
