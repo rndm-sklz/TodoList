@@ -42,7 +42,7 @@ function TodoItem({ todo: { id, title, completed }, index, onChange, onEditSave 
 				{title}
 			</span>
 			<button onClick={() => setIsEditTodo(true)}>Edit</button>
-			<button className="rm" onClick={removeTodo.bind(null, id)}>&times;</button>
+			<button className="rm" onClick={() => removeTodo(id)}>&times;</button>
 		</li>
 	)
 }
