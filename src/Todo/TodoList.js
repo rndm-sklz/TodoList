@@ -4,7 +4,6 @@ import TodoItem from './TodoItem'
 
 function TodoList(props) {
 	return (
-		// <ul style = {styles.ul}>
 		<ul className='todo-list'>
 			{props.todos.map((todo, index) => {
 				return (
@@ -13,8 +12,8 @@ function TodoList(props) {
 						key={todo.id}
 						index={index}
 						onEditSave={props.onEditSave}
-						onChange={props.onToggle}/>
-					)
+						onChange={props.onToggle} />
+				)
 			})}
 		</ul>
 	)

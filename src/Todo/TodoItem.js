@@ -6,13 +6,13 @@ function TodoItem({ todo: { id, title, completed }, index, onChange, onEditSave 
 	const [isEditTodo, setIsEditTodo] = useState(false) //TODO: switch to false
 	const [editableTitle, setEditableTitle] = useState(title)
 
-	function onEditSaveTodo () {
+	function onEditSaveTodo() {
 		onEditSave(id, editableTitle);
 		setIsEditTodo(false);
 	}
 
 	useEffect(() => {
-		if (isEditTodo === true) {
+		if (isEditTodo) {
 			setEditableTitle(title)
 		}
 	}, [isEditTodo, title])
@@ -21,7 +21,7 @@ function TodoItem({ todo: { id, title, completed }, index, onChange, onEditSave 
 		<li className='todo-item'>
 			<span>
 				<input
-				className='todo-edit-input'
+					className='todo-edit-input'
 					value={editableTitle}
 					onChange={(event) => setEditableTitle(event.target.value)}
 				/>

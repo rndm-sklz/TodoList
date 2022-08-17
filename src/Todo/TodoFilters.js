@@ -2,18 +2,18 @@ import React from 'react'
 function TodoFilters(props) {
 	function handleFilterAll() {
 		props.setFilter('all');
-	  }
+	}
 
-	  function handleFilterActive() {
+	function handleFilterActive() {
 		props.setFilter('active');
-	  }
+	}
 
-	  function handleFilterComplete() {
+	function handleFilterComplete() {
 		props.setFilter('completed');
-	  }
+	}
 	return (
 		<div className="filters-wrapper">
-			<p className="remaining" >{ props.todos.filter(todo => !todo.completed).length } left</p>
+			<p className="remaining" >{props.todos.filter(todo => !todo.completed).length} left</p>
 			<button className="filter-btn" onClick={handleFilterAll}>All</button>
 			<button className="filter-btn" onClick={handleFilterActive}>Active</button>
 			<button className="filter-btn" onClick={handleFilterComplete}>Completed</button>
