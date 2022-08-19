@@ -6,24 +6,20 @@ import TodoFilters from './Todo/TodoFilters'
 
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false);
+//   const [isLoaded, setIsLoaded] = useState(false);
   const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState('all');
   const [filteredTodos, setFilteredTodos] = useState([]);
 
   useEffect(() => {
     let localTodo = JSON.parse(localStorage.getItem('todos'));
-
     if (localTodo) setTodos(localTodo)
-
-    setIsLoaded(true);
+    // setIsLoaded(true);
   }, [])
 
-  useEffect(() => {
-    if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
-  }, [todos, isLoaded])
-
-  console.log(localStorage);
+//   useEffect(() => {
+//     if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
+//   }, [todos, isLoaded])
 
   useEffect(() => {
     if (filter === 'all') {
@@ -57,10 +53,12 @@ function App() {
         return todo
       })
     )
+	localStorage.setItem('todos', JSON.stringify(todos))
   }
 
   function removeTodo(id) {
-    setTodos(todos.filter(todo => todo.id !== id))
+    setTodos(todos.filter(todo => todo.id !== id));
+	localStorage.setItem('todos', JSON.stringify(todos))
   }
 
   function addTodo(title) {
@@ -68,7 +66,8 @@ function App() {
       title,
       id: Date.now(),
       completed: false
-    }]))
+    }]));
+	if (todos) localStorage.setItem('todos', JSON.stringify(todos))
   }
 
   return (
