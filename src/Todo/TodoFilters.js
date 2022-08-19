@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 function TodoFilters(props) {
 	function handleFilterAll() {
 		props.setFilter('all');
@@ -19,6 +20,10 @@ function TodoFilters(props) {
 			<button className="filter-btn" onClick={handleFilterComplete}>Completed</button>
 		</div>
 	)
+}
+
+TodoFilters.propTypes = {
+	todos: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
 export default TodoFilters

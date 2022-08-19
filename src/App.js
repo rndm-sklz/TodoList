@@ -6,79 +6,81 @@ import TodoFilters from './Todo/TodoFilters'
 
 
 function App() {
-	const [isLoaded, setIsLoaded] = useState(false);
-	const [todos, setTodos] = useState([]);
-	const [filter, setFilter] = useState('all');
-	const [filteredTodos, setFilteredTodos] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState('all');
+  const [filteredTodos, setFilteredTodos] = useState([]);
 
-	useEffect(() => {
-		let localTodo = JSON.parse(localStorage.getItem('todos'));
+  useEffect(() => {
+    let localTodo = JSON.parse(localStorage.getItem('todos'));
 
-		if (localTodo) setTodos(localTodo)
+    if (localTodo) setTodos(localTodo)
 
-		setIsLoaded(true);
-	}, [])
+    setIsLoaded(true);
+  }, [])
 
-	useEffect(() => {
-		if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
-	}, [todos, isLoaded])
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
+  }, [todos, isLoaded])
 
-	useEffect(() => {
-		if (filter === 'all') {
-			setFilteredTodos(todos);
-		} else if (filter === 'active') {
-			const activeTodos = todos.filter(todo => !todo.completed);
-			setFilteredTodos(activeTodos);
-		} else if (filter === 'completed') {
-			const completedTodos = todos.filter(todo => todo.completed);
-			setFilteredTodos(completedTodos);
-		}
-	}, [todos, filter])
+  console.log(localStorage);
 
-	function toggleTodo(id) {
-		setTodos(
-			todos.map(todo => {
-				if (todo.id === id) {
-					todo.completed = !todo.completed
-				}
-				return todo
-			})
-		)
-	}
+  useEffect(() => {
+    if (filter === 'all') {
+      setFilteredTodos(todos);
+    } else if (filter === 'active') {
+      const activeTodos = todos.filter(todo => !todo.completed);
+      setFilteredTodos(activeTodos);
+    } else if (filter === 'completed') {
+      const completedTodos = todos.filter(todo => todo.completed);
+      setFilteredTodos(completedTodos);
+    }
+  }, [todos, filter])
 
-	function onEditSave(id, title) {
-		setTodos(
-			todos.map(todo => {
-				if (todo.id === id) {
-					todo.title = title
-				}
-				return todo
-			})
-		)
-	}
+  function toggleTodo(id) {
+    setTodos(
+      todos.map(todo => {
+        if (todo.id === id) {
+          todo.completed = !todo.completed
+        }
+        return todo
+      })
+    )
+  }
 
-	function removeTodo(id) {
-		setTodos(todos.filter(todo => todo.id !== id))
-	}
+  function onEditSave (id, title) {
+    setTodos(
+      todos.map( todo => {
+        if (todo.id === id) {
+          todo.title = title
+        }
+        return todo
+      })
+    )
+  }
 
-	function addTodo(title) {
-		setTodos(todos.concat([{
-			title,
-			id: Date.now(),
-			completed: false
-		}]))
-	}
+  function removeTodo(id) {
+    setTodos(todos.filter(todo => todo.id !== id))
+  }
 
-	return (
-		<Context.Provider value={{ removeTodo }}>
-			<div className="wrapper">
-				<h1>Todo List</h1>
-				<AddTodo onCreate={addTodo} />
-				{todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
-				<TodoFilters setFilter={setFilter} todos={todos} />
-			</div>
-		</Context.Provider>
-	)
+  function addTodo(title) {
+    setTodos(todos.concat([{
+      title,
+      id: Date.now(),
+      completed: false
+    }]))
+  }
+
+  return (
+    <Context.Provider value={{ removeTodo }}>
+      <div className="wrapper">
+        <h1>Todo List</h1>
+        <AddTodo onCreate={addTodo} />
+        {todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
+        <TodoFilters setFilter={setFilter} todos={todos}/>
+      </div>
+    </Context.Provider>
+  )
 }
 
 export default App;

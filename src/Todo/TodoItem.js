@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Context from "../context"
 function TodoItem({ todo: { id, title, completed }, index, onChange, onEditSave }) {
 	const { removeTodo } = useContext(Context)
-	const [isEditTodo, setIsEditTodo] = useState(false) //TODO: switch to false
+	const [isEditTodo, setIsEditTodo] = useState(false)
 	const [editableTitle, setEditableTitle] = useState(title)
 
 	function onEditSaveTodo() {
@@ -48,9 +48,14 @@ function TodoItem({ todo: { id, title, completed }, index, onChange, onEditSave 
 }
 
 TodoItem.propTypes = {
-	todo: PropTypes.object.isRequired,
+	todo: PropTypes.shape({
+		id: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		completed: PropTypes.bool.isRequired
+	}),
 	index: PropTypes.number,
 	onChange: PropTypes.func.isRequired,
+	onEditSave: PropTypes.func.isRequired
 }
 
 export default TodoItem
