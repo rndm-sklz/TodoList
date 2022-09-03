@@ -6,81 +6,75 @@ import TodoFilters from './Todo/TodoFilters'
 
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [todos, setTodos] = useState([]);
-  const [filter, setFilter] = useState('all');
-  const [filteredTodos, setFilteredTodos] = useState([]);
+	const [todos, setTodos] = useState([]);
+	const [filter, setFilter] = useState('all');
+	const [filteredTodos, setFilteredTodos] = useState([]);
 
-  useEffect(() => {
-    let localTodo = JSON.parse(localStorage.getItem('todos'));
+	useEffect(() => {
+		let localTodos = JSON.parse(localStorage.getItem('todos'));
+		if (localTodos) setTodos(localTodos)
+	}, [])
 
-    if (localTodo) setTodos(localTodo)
+	useEffect(() => {
+		if (filter === 'all') {
+			setFilteredTodos(todos);
+		} else if (filter === 'active') {
+			const activeTodos = todos.filter(todo => !todo.completed);
+			setFilteredTodos(activeTodos);
+		} else if (filter === 'completed') {
+			const completedTodos = todos.filter(todo => todo.completed);
+			setFilteredTodos(completedTodos);
+		}
+	}, [todos, filter])
 
-    setIsLoaded(true);
-  }, [])
+	function toggleTodo(id) {
+		let toggleLocalTodos = todos.map(todo => {
+			if (todo.id === id) {
+				todo.completed = !todo.completed
+			}
+			return todo
+		});
+		setTodos(toggleLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(toggleLocalTodos))
+	}
 
-  useEffect(() => {
-    if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
-  }, [todos, isLoaded])
+	function onEditSave(id, title) {
+		let editLocalTodos = todos.map(todo => {
+			if (todo.id === id) {
+				todo.title = title
+			}
+			return todo
+		});
+		setTodos(editLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(editLocalTodos))
+	}
 
-  console.log(localStorage);
+	function removeTodo(id) {
+		let rmLocalTodos = todos.filter(todo => todo.id !== id);
+		setTodos(rmLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(rmLocalTodos))
+	}
 
-  useEffect(() => {
-    if (filter === 'all') {
-      setFilteredTodos(todos);
-    } else if (filter === 'active') {
-      const activeTodos = todos.filter(todo => !todo.completed);
-      setFilteredTodos(activeTodos);
-    } else if (filter === 'completed') {
-      const completedTodos = todos.filter(todo => todo.completed);
-      setFilteredTodos(completedTodos);
-    }
-  }, [todos, filter])
+	function addTodo(title) {
+		let addLocalTodos = todos.concat([{
+			title,
+			id: Date.now(),
+			completed: false
+		}]);
+		setTodos(addLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(addLocalTodos))
+	}
 
-  function toggleTodo(id) {
-    setTodos(
-      todos.map(todo => {
-        if (todo.id === id) {
-          todo.completed = !todo.completed
-        }
-        return todo
-      })
-    )
-  }
-
-  function onEditSave (id, title) {
-    setTodos(
-      todos.map( todo => {
-        if (todo.id === id) {
-          todo.title = title
-        }
-        return todo
-      })
-    )
-  }
-
-  function removeTodo(id) {
-    setTodos(todos.filter(todo => todo.id !== id))
-  }
-
-  function addTodo(title) {
-    setTodos(todos.concat([{
-      title,
-      id: Date.now(),
-      completed: false
-    }]))
-  }
-
-  return (
-    <Context.Provider value={{ removeTodo }}>
-      <div className="wrapper">
-        <h1>Todo List</h1>
-        <AddTodo onCreate={addTodo} />
-        {todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
-        <TodoFilters setFilter={setFilter} todos={todos}/>
-      </div>
-    </Context.Provider>
-  )
+	return (
+		<Context.Provider value={{ removeTodo }}>
+			<div className="wrapper">
+				<h1>Todo List</h1>
+				<AddTodo onCreate={addTodo} />
+				{todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
+				<TodoFilters setFilter={setFilter} todos={todos} />
+			</div>
+		</Context.Provider>
+	)
 }
 
 export default App;
