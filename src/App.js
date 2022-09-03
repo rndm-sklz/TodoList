@@ -6,80 +6,75 @@ import TodoFilters from './Todo/TodoFilters'
 
 
 function App() {
-//   const [isLoaded, setIsLoaded] = useState(false);
-  const [todos, setTodos] = useState([]);
-  const [filter, setFilter] = useState('all');
-  const [filteredTodos, setFilteredTodos] = useState([]);
+	const [todos, setTodos] = useState([]);
+	const [filter, setFilter] = useState('all');
+	const [filteredTodos, setFilteredTodos] = useState([]);
 
-  useEffect(() => {
-    let localTodo = JSON.parse(localStorage.getItem('todos'));
-    if (localTodo) setTodos(localTodo)
-    // setIsLoaded(true);
-  }, [])
+	useEffect(() => {
+		let localTodos = JSON.parse(localStorage.getItem('todos'));
+		if (localTodos) setTodos(localTodos)
+	}, [])
 
-//   useEffect(() => {
-//     if (isLoaded) localStorage.setItem('todos', JSON.stringify(todos))
-//   }, [todos, isLoaded])
+	useEffect(() => {
+		if (filter === 'all') {
+			setFilteredTodos(todos);
+		} else if (filter === 'active') {
+			const activeTodos = todos.filter(todo => !todo.completed);
+			setFilteredTodos(activeTodos);
+		} else if (filter === 'completed') {
+			const completedTodos = todos.filter(todo => todo.completed);
+			setFilteredTodos(completedTodos);
+		}
+	}, [todos, filter])
 
-  useEffect(() => {
-    if (filter === 'all') {
-      setFilteredTodos(todos);
-    } else if (filter === 'active') {
-      const activeTodos = todos.filter(todo => !todo.completed);
-      setFilteredTodos(activeTodos);
-    } else if (filter === 'completed') {
-      const completedTodos = todos.filter(todo => todo.completed);
-      setFilteredTodos(completedTodos);
-    }
-  }, [todos, filter])
+	function toggleTodo(id) {
+		let toggleLocalTodos = todos.map(todo => {
+			if (todo.id === id) {
+				todo.completed = !todo.completed
+			}
+			return todo
+		});
+		setTodos(toggleLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(toggleLocalTodos))
+	}
 
-  function toggleTodo(id) {
-    setTodos(
-      todos.map(todo => {
-        if (todo.id === id) {
-          todo.completed = !todo.completed
-        }
-        return todo
-      })
-    )
-  }
+	function onEditSave(id, title) {
+		let editLocalTodos = todos.map(todo => {
+			if (todo.id === id) {
+				todo.title = title
+			}
+			return todo
+		});
+		setTodos(editLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(editLocalTodos))
+	}
 
-  function onEditSave (id, title) {
-    setTodos(
-      todos.map( todo => {
-        if (todo.id === id) {
-          todo.title = title
-        }
-        return todo
-      })
-    )
-	localStorage.setItem('todos', JSON.stringify(todos))
-  }
+	function removeTodo(id) {
+		let rmLocalTodos = todos.filter(todo => todo.id !== id);
+		setTodos(rmLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(rmLocalTodos))
+	}
 
-  function removeTodo(id) {
-    setTodos(todos.filter(todo => todo.id !== id));
-	localStorage.setItem('todos', JSON.stringify(todos))
-  }
+	function addTodo(title) {
+		let addLocalTodos = todos.concat([{
+			title,
+			id: Date.now(),
+			completed: false
+		}]);
+		setTodos(addLocalTodos);
+		localStorage.setItem('todos', JSON.stringify(addLocalTodos))
+	}
 
-  function addTodo(title) {
-    setTodos(todos.concat([{
-      title,
-      id: Date.now(),
-      completed: false
-    }]));
-	if (todos) localStorage.setItem('todos', JSON.stringify(todos))
-  }
-
-  return (
-    <Context.Provider value={{ removeTodo }}>
-      <div className="wrapper">
-        <h1>Todo List</h1>
-        <AddTodo onCreate={addTodo} />
-        {todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
-        <TodoFilters setFilter={setFilter} todos={todos}/>
-      </div>
-    </Context.Provider>
-  )
+	return (
+		<Context.Provider value={{ removeTodo }}>
+			<div className="wrapper">
+				<h1>Todo List</h1>
+				<AddTodo onCreate={addTodo} />
+				{todos.length ? <TodoList todos={filteredTodos} onToggle={toggleTodo} onEditSave={onEditSave} /> : <p>No todos</p>}
+				<TodoFilters setFilter={setFilter} todos={todos} />
+			</div>
+		</Context.Provider>
+	)
 }
 
 export default App;
